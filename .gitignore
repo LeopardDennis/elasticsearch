@@ -1,0 +1,6 @@
+composer.json
+composer.lock
+/cache/
+/modules/
+/vendor/
+/web/

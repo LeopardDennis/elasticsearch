@@ -1,0 +1,14 @@
+{
+    "id": "elasticsearch",
+    "name": "Elasticsearch",
+    "description": "Elasticsearch Module",
+    "version": "0.0.1",
+    "dependencies": {
+        "gini": "*"    
+    },
+    "composer": {
+        "require": {
+            "elasticsearch/elasticsearch": "~2.0"    
+        }    
+    }
+}
