@@ -4,7 +4,7 @@ namespace Gini;
 
 class Elasticsearch {
     
-    private static $instance = [];
+    private static $_instance = null;
 
     private $_client;
 
@@ -14,10 +14,10 @@ class Elasticsearch {
     }
 
     public static function of() {
-        if (!isset(static::$instance)) {
-            static::$instance = \Gini\IoC::construct('\Gini\Elasticsearch');    
+        if (!isset(self::$_instance)) {
+            self::$_instance = new static();
         }
-        return static::$instance;
+        return self::$_instance;
     }
 
     public function setup($index, $settings = [], $mappings = []) {
