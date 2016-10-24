@@ -8,14 +8,14 @@ class Elasticsearch {
 
     private $_client;
 
-    private function __construct() {
+    public function __construct() {
         $hosts = \Gini\Config::get('elasticsearch.hosts');
         $this->_client = \Elasticsearch\ClientBuilder::create()->setHosts($hosts)->build();
     }
 
     public static function of() {
         if (!isset(self::$_instance)) {
-            self::$_instance = new static();
+            self::$_instance = \Gini\IoC::construct('\Gini\Elasticsearch');
         }
         return self::$_instance;
     }
