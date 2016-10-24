@@ -22,30 +22,54 @@ class Elasticsearch {
 
     public function setup($index, $settings = [], $mappings = []) {
         if (!$index) {
-            throw new \ErrorException('Wrong Index', 10001); 
+            throw new \ErrorException('Wrong Index', 10000);
         }
 
         if (!is_array($settings) || !is_array($mappings)) {
-            throw new \ErrorException('Wrong Settings or Mappings', 10002); 
+            throw new \ErrorException('Wrong Settings or Mappings', 10001); 
         }
 
         $params = [
             'index' => $index,
-            'body' => [
-                'settings' => [$settings],
-                'mappings' => [$mappings]
-            ]
+            'body' => $body
         ];
 
-        $response = $this->_client->indices()->create($params);
-    }
-
-    public function index($params) {
-        if (!is_array($params)) {
-            throw new \ErrorException('Wrong Params', 10003);
+        if ($settins) {
+            $params['body'] = $settings;
+            $response = $this->_client->indices()->putSettings($params);
         }
 
-        $response = $this->_client->index($params);
+        if ($mappings) {
+            $params['body'] = $mappings;
+            $response = $this->_client->indices()->putMapping($params);
+        }
+    }
+
+    public function index($index, $type, $id, $document) {
+        if (!$index) {
+            throw new \ErrorException('Wrong Index', 10000);
+        }
+
+        if (!$type) {
+            throw new \ErrorException('Wrong Type', 10002);
+        }
+
+        if (!$id) {
+            throw new \ErrorException('Wrong ID', 10003);
+        }
+
+        if (!is_array($document)) {
+            throw new \ErrorException('Wrong Document', 10004);
+        }
+
+        $params = [
+            'index' => $index,
+            'type' => $type,
+            'id' => $id,
+            'body' => $document
+        ];
+
+        return $this->_client->index($params);
     }
 }
 
