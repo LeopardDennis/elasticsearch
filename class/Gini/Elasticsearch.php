@@ -20,29 +20,55 @@ class Elasticsearch {
         return self::$_instance;
     }
 
-    public function setup($index, $settings = [], $mappings = []) {
+    public function create($index) {
         if (!$index) {
             throw new \ErrorException('Wrong Index', 10000);
         }
 
-        if (!is_array($settings) || !is_array($mappings)) {
-            throw new \ErrorException('Wrong Settings or Mappings', 10001); 
+        $params = [
+            'index' => $index,
+        ];
+
+        return $this->_client->indices()->create($params);
+    }
+
+    public function setSettings($index, $settings = []) {
+        if (!$index) {
+            throw new \ErrorException('Wrong Index', 10000);
+        }
+
+        if (!is_array($settings)) {
+            throw new \ErrorException('Wrong Settings', 10002); 
         }
 
         $params = [
             'index' => $index,
-            'body' => $body
+            'body' => $settings
         ];
 
-        if ($settins) {
-            $params['body'] = $settings;
-            $response = $this->_client->indices()->putSettings($params);
+        return $this->_client->indices()->putSettings($params);
+    }
+
+    public function setMappings($index, $type, $mappings = []) {
+        if (!$index) {
+            throw new \ErrorException('Wrong Index', 10000);
         }
 
-        if ($mappings) {
-            $params['body'] = $mappings;
-            $response = $this->_client->indices()->putMapping($params);
+        if (!$type) {
+            throw new \ErrorException('Wrong Type', 10001);
         }
+
+        if (!is_array($mappings)) {
+            throw new \ErrorException('Wrong Mappings', 10003); 
+        }
+
+        $params = [
+            'index' => $index,
+            'type' => $type,
+            'body' => $mappings
+        ];
+
+        return $this->_client->indices()->putMapping($params);
     }
 
     public function index($index, $type, $id, $document) {
@@ -51,15 +77,15 @@ class Elasticsearch {
         }
 
         if (!$type) {
-            throw new \ErrorException('Wrong Type', 10002);
+            throw new \ErrorException('Wrong Type', 10001);
         }
 
         if (!$id) {
-            throw new \ErrorException('Wrong ID', 10003);
+            throw new \ErrorException('Wrong ID', 10004);
         }
 
         if (!is_array($document)) {
-            throw new \ErrorException('Wrong Document', 10004);
+            throw new \ErrorException('Wrong Document', 10005);
         }
 
         $params = [
