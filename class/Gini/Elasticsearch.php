@@ -10,7 +10,7 @@ class Elasticsearch {
 
     public function __construct() {
         $hosts = \Gini\Config::get('elasticsearch.hosts');
-        $this->_client = \Elasticsearch\ClientBuilder::create()->setHosts($hosts)->build();
+        $this->_client = \Elasticsearch\ClientBuilder::create()->allowBadJSONSerialization()->setHosts($hosts)->build();
     }
 
     public static function of() {
@@ -32,7 +32,7 @@ class Elasticsearch {
         return $this->_client->indices()->create($params);
     }
 
-    public function setSettings($index, $settings = []) {
+    public function putSettings($index, $settings = []) {
         if (!$index) {
             throw new \ErrorException('Wrong Index', 10000);
         }
@@ -49,7 +49,7 @@ class Elasticsearch {
         return $this->_client->indices()->putSettings($params);
     }
 
-    public function setMappings($index, $type, $mappings = []) {
+    public function putMappings($index, $type, $mappings = []) {
         if (!$index) {
             throw new \ErrorException('Wrong Index', 10000);
         }
@@ -96,6 +96,18 @@ class Elasticsearch {
         ];
 
         return $this->_client->index($params);
+    }
+
+    public function delete($index) {
+        if (!$index) {
+            throw new \ErrorException('Wrong Index', 10000);
+        }
+
+        $params = [
+            'index' => $index,
+        ];
+
+        return $this->_client->indices()->delete($params);
     }
 }
 
